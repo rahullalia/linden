@@ -21,6 +21,15 @@ export function Reveal({ children, className, id, delay = 0, as = "div" }: Props
     const node = ref.current;
     if (!node) return;
 
+    // Anything already level with the fold or scrolled past it is shown at
+    // once. Without this, arriving partway down the page (an anchor link, a
+    // restored scroll position, a fast flick) would leave everything above
+    // the viewport stuck at zero opacity, because it never intersects again.
+    if (node.getBoundingClientRect().top < window.innerHeight) {
+      setShown(true);
+      return;
+    }
+
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
