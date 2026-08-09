@@ -46,3 +46,6 @@ next-env.d.ts
 # local agent notes
 CLAUDE.md
 AGENTS.md
+
+# local running record
+log.md
