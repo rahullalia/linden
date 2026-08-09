@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 
-const site = "https://lindenbodywork.vercel.app";
+const site = "https://linden-one.vercel.app";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const routes = ["", "/services", "/about", "/first-visit", "/gift-cards", "/book"];

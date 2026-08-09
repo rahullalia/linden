@@ -21,7 +21,7 @@ const instrumentSans = Instrument_Sans({
   display: "swap",
 });
 
-const site = "https://lindenbodywork.vercel.app";
+const site = "https://linden-one.vercel.app";
 
 export const metadata: Metadata = {
   metadataBase: new URL(site),
