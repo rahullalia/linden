@@ -35,7 +35,7 @@ components/
 lib/                 studio details, services, practitioners, availability
 scripts/             image pipeline
 public/photographs/  web sized images, generated
-public/video/        hero footage
+public/video/        the footage band
 ```
 
 Colour, type and easing tokens live at the top of `app/globals.css`. Below them is a
@@ -79,7 +79,7 @@ node scripts/build-images.mjs
 That resizes, adds a little grain so flat plaster and linen do not band, strips metadata
 and writes WebP into `public/photographs/`, plus a 1200x630 JPEG for the Open Graph card.
 
-The photography and the hero footage were generated with Google's Nano Banana Pro and Veo
+The photography and the footage band were generated with Google's Nano Banana Pro and Veo
 3.1, and carry SynthID watermarking in the pixels.
 
 ### Performance
