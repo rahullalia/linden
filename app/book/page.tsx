@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 
 export default function BookPage() {
   return (
-    <div className="wrap pb-28 pt-36 md:pb-36 md:pt-48">
+    <div className="wrap pb-20 pt-[calc(var(--rail)+3.5rem)] md:pb-28 md:pt-[calc(var(--rail)+6rem)]">
       <div className="grid gap-10 md:grid-cols-12">
         <div className="md:col-span-7">
           <h1 className="display">Book a table</h1>
@@ -21,9 +21,9 @@ export default function BookPage() {
             gratuity in it.
           </p>
         </div>
-        <div className="text-[0.95rem] text-ink-2 md:col-span-3 md:col-start-10 md:self-end md:text-right">
+        <div className="text-[0.95rem] text-bone-2 md:col-span-3 md:col-start-10 md:self-end md:text-right">
           <p>Rather do this out loud?</p>
-          <a href={studio.phoneHref} className="link num mt-1 inline-block text-ink">
+          <a href={studio.phoneHref} className="transition-colors duration-200 hover:text-signal data mt-1 inline-block text-bone">
             {studio.phone}
           </a>
         </div>

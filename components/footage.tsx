@@ -3,16 +3,15 @@
 import { useEffect, useRef, useState } from "react";
 
 /**
- * Background footage for the hero. Decorative, so it stays out of the
- * accessibility tree.
+ * The full width band of footage partway down the page. Decorative, so it stays
+ * out of the accessibility tree.
  *
- * The poster carries the first paint on every device. The footage itself is an
- * enhancement: it is only fetched on a wide screen, when the visitor has not
- * asked for reduced motion and is not on a metered connection. That keeps a
- * megabyte of video off phones, where it would otherwise become the largest
- * contentful paint.
+ * The poster frame carries every device. The footage itself is an enhancement:
+ * only fetched on a wide screen, when the visitor has not asked for reduced
+ * motion and is not on a metered connection. That keeps a megabyte of video off
+ * phones entirely.
  */
-export function HeroVideo() {
+export function Footage() {
   const ref = useRef<HTMLVideoElement>(null);
   const [wanted, setWanted] = useState(false);
 

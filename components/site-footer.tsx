@@ -2,61 +2,72 @@ import Link from "next/link";
 
 import { hoursSummary, studio } from "@/lib/studio";
 
+const pages = [
+  { href: "/services", label: "Services" },
+  { href: "/book", label: "Book" },
+  { href: "/about", label: "About" },
+  { href: "/first-visit", label: "First visit" },
+  { href: "/gift-cards", label: "Gift cards" },
+];
+
 export function SiteFooter() {
   return (
-    <footer className="bg-night text-paper">
-      <div className="wrap grid gap-14 py-20 md:grid-cols-12 md:py-28">
-        <div className="md:col-span-5">
-          <p className="font-display text-[1.6rem] leading-none tracking-[0.16em]">LINDEN</p>
-          <p className="mt-6 max-w-xs text-[0.95rem] leading-relaxed text-paper/70">
-            Massage and bodywork. Four rooms, five therapists, one long block off Lorimer.
-          </p>
-        </div>
+    <footer className="relative z-10 border-t border-line bg-ground">
+      <div className="wrap">
+        <p className="display py-10 text-bone md:py-16">Linden</p>
+      </div>
 
+      <div className="wrap grid gap-10 border-t border-line py-12 md:grid-cols-12 md:py-16">
         <div className="md:col-span-3">
-          <h2 className="text-[0.95rem] text-paper/60">Where</h2>
-          <address className="mt-4 space-y-1 text-[0.95rem] not-italic leading-relaxed">
+          <h2 className="tag">Where</h2>
+          <address className="mt-4 space-y-0.5 text-[0.95rem] not-italic text-bone-2">
             <p>{studio.street}</p>
             <p>
               {studio.city}, {studio.state} {studio.zip}
             </p>
-            <p className="pt-3">
-              <a href={studio.phoneHref} className="link num">
-                {studio.phone}
-              </a>
-            </p>
-            <p>
-              <a href={`mailto:${studio.email}`} className="link">
-                {studio.email}
-              </a>
-            </p>
+            <p className="pt-3 text-bone-3">{studio.trains}</p>
           </address>
         </div>
 
-        <div className="md:col-span-2">
-          <h2 className="text-[0.95rem] text-paper/60">When</h2>
-          <dl className="mt-4 space-y-1 text-[0.95rem]">
+        <div className="md:col-span-3">
+          <h2 className="tag">Hours</h2>
+          <dl className="mt-4 space-y-0.5 text-[0.95rem] text-bone-2">
             {hoursSummary.map((row) => (
-              <div key={row.label} className="flex justify-between gap-4 md:block">
-                <dt className="text-paper/70">{row.label}</dt>
-                <dd className="num">{row.value}</dd>
+              <div key={row.label} className="flex justify-between gap-4">
+                <dt>{row.label}</dt>
+                <dd className="data text-bone">{row.value}</dd>
               </div>
             ))}
           </dl>
         </div>
 
-        <nav aria-label="Footer" className="md:col-span-2">
-          <h2 className="text-[0.95rem] text-paper/60">More</h2>
-          <ul className="mt-4 space-y-1.5 text-[0.95rem]">
-            {[
-              { href: "/services", label: "Services" },
-              { href: "/about", label: "About" },
-              { href: "/first-visit", label: "First visit" },
-              { href: "/gift-cards", label: "Gift cards" },
-              { href: "/book", label: "Book" },
-            ].map((item) => (
+        <div className="md:col-span-3">
+          <h2 className="tag">Reach us</h2>
+          <div className="mt-4 space-y-0.5 text-[0.95rem]">
+            <a
+              href={studio.phoneHref}
+              className="data block text-bone transition-colors duration-200 hover:text-signal"
+            >
+              {studio.phone}
+            </a>
+            <a
+              href={`mailto:${studio.email}`}
+              className="block text-bone-2 transition-colors duration-200 hover:text-signal"
+            >
+              {studio.email}
+            </a>
+          </div>
+        </div>
+
+        <nav aria-label="Footer" className="md:col-span-2 md:col-start-11">
+          <h2 className="tag">Pages</h2>
+          <ul className="mt-4 space-y-1 text-[0.95rem]">
+            {pages.map((item) => (
               <li key={item.href}>
-                <Link href={item.href} className="link">
+                <Link
+                  href={item.href}
+                  className="text-bone-2 transition-colors duration-200 hover:text-signal"
+                >
                   {item.label}
                 </Link>
               </li>
@@ -65,16 +76,14 @@ export function SiteFooter() {
         </nav>
       </div>
 
-      <div className="border-t border-night-rule">
-        <div className="wrap flex flex-col gap-2 py-7 text-[0.82rem] text-paper/60 sm:flex-row sm:items-center sm:justify-between">
-          <p>
-            &copy; {studio.opened} to {new Date().getFullYear()} {studio.legalName}
-          </p>
-          <p>
-            A concept site. Linden is not a real business and the booking calendar does not
-            take real appointments.
-          </p>
-        </div>
+      <div className="wrap flex flex-col gap-2 border-t border-line py-6 sm:flex-row sm:items-center sm:justify-between">
+        <p className="tag">
+          {studio.opened} to {new Date().getFullYear()} {studio.legalName}
+        </p>
+        <p className="tag max-w-md sm:text-right">
+          A concept site. Linden is not a real business and the booking calendar does not take
+          real appointments.
+        </p>
       </div>
     </footer>
   );

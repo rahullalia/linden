@@ -1,7 +1,7 @@
 # Linden
 
 Website for a small massage studio in Williamsburg, Brooklyn. Six pages, an appointment
-booker with a real calendar, and a video hero.
+booker with a real calendar, and a live board of the next open times.
 
 Linden is not a real business. This is a concept site, and the booking flow does not
 create appointments or send anything anywhere.
@@ -42,6 +42,18 @@ Colour, type and easing tokens live at the top of `app/globals.css`. Below them 
 second block that points the generic token names the Radix components expect at the same
 palette, so the primitives inherit the design rather than needing per component overrides.
 
+Type is Archivo on its width axis for display and JetBrains Mono for anything numeric.
+The twelve column rules the layout sits on are drawn rather than implied, from
+`components/grid-rules.tsx`.
+
+### The board
+
+The home page opens on the next three times anybody is free, worked out in the browser
+from the same `lib/availability.ts` the booker uses, so the two can never disagree. Each
+row carries the whole choice into `/book` as search params, which turns taking one of
+those times into a single step instead of four. A stale or nonsense link falls back to the
+nearest step it can honour rather than erroring.
+
 ### The booking flow
 
 Four steps that collapse to a summary line once answered, with a running total in the
@@ -72,10 +84,13 @@ The photography and the hero footage were generated with Google's Nano Banana Pr
 
 ### Performance
 
-The hero video only downloads on screens 768px and wider, and never when the visitor has
-asked for reduced motion or has Save Data on. Phones get the poster frame and nothing else,
-which keeps about a megabyte off the page. Lighthouse on simulated mobile: 93 performance,
-100 accessibility, 100 best practices, 100 SEO, with no layout shift.
+The band of footage partway down the page only downloads on screens 768px and wider, and
+never when the visitor has asked for reduced motion or has Save Data on. Phones get the
+poster frame and nothing else, which keeps about a megabyte off the page.
+
+Nothing in the first screen animates in. An entrance there would hold the largest paint
+behind its own transition, which cost three points and half a second when it was tried.
+Reveals start below the fold.
 
 Scroll reveals are gated behind a flag set by an inline script, so with scripting off the
 copy is simply there rather than sitting at zero opacity.

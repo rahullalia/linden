@@ -5,28 +5,27 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2.5 rounded-[2px] font-sans whitespace-nowrap " +
-    "transition-[background-color,color,border-color] duration-200 ease-[var(--ease-standard)] " +
-    "active:translate-y-px disabled:pointer-events-none disabled:opacity-40 " +
-    "[&_svg]:shrink-0 [&_svg]:size-4",
+  "group/btn inline-flex items-center justify-center gap-3 font-mono uppercase tracking-[0.1em] whitespace-nowrap " +
+    "transition-colors duration-[280ms] ease-[var(--ease-snap)] " +
+    "disabled:pointer-events-none disabled:opacity-35 " +
+    "[&_svg]:shrink-0 [&_svg]:size-4 [&_svg]:transition-transform [&_svg]:duration-[280ms] " +
+    "[&_svg]:ease-[var(--ease-snap)] hover:[&_svg]:translate-x-1",
   {
     variants: {
       variant: {
-        solid: "bg-ink text-paper hover:bg-clay",
-        outline:
-          "border border-ink/25 text-ink hover:border-ink hover:bg-ink hover:text-paper",
-        quiet: "text-ink hover:text-clay",
-        light: "bg-paper text-ink hover:bg-clay hover:text-paper",
-        lightOutline:
-          "border border-paper/35 text-paper hover:bg-paper hover:text-ink hover:border-paper",
+        // Primary. Solid, never an outline.
+        signal: "bg-signal text-ground hover:bg-bone",
+        bone: "bg-bone text-ground hover:bg-signal",
+        line: "wipe border border-line text-bone hover:border-signal hover:text-ground",
+        bare: "text-bone hover:text-signal",
       },
       size: {
-        sm: "h-10 px-5 text-[0.82rem] tracking-[0.01em]",
-        md: "h-12 px-7 text-[0.9rem] tracking-[0.01em]",
-        lg: "h-14 px-9 text-[0.95rem] tracking-[0.01em]",
+        sm: "h-10 px-4 text-[0.68rem]",
+        md: "h-12 px-6 text-[0.72rem]",
+        lg: "h-14 px-8 text-[0.76rem]",
       },
     },
-    defaultVariants: { variant: "solid", size: "md" },
+    defaultVariants: { variant: "signal", size: "md" },
   },
 );
 

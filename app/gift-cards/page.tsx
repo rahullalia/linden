@@ -27,7 +27,7 @@ export default function GiftCardsPage() {
   );
 
   return (
-    <div className="wrap pb-28 pt-36 md:pb-36 md:pt-48">
+    <div className="wrap pb-20 pt-[calc(var(--rail)+3.5rem)] md:pb-28 md:pt-[calc(var(--rail)+6rem)]">
       <div className="grid gap-10 md:grid-cols-12">
         <div className="md:col-span-7">
           <h1 className="display max-w-[12ch]">Gift cards</h1>
@@ -39,20 +39,20 @@ export default function GiftCardsPage() {
       </div>
 
       <div className="mt-20 grid gap-14 md:mt-28 md:grid-cols-12 md:gap-10">
-        <Reveal className="md:col-span-6">
-          <dl className="border-t border-rule">
+        <Reveal className="lift md:col-span-6">
+          <dl className="border-t border-line">
             {amounts.map((amount) => (
               <div
                 key={amount.value}
-                className="flex items-baseline justify-between gap-8 border-b border-rule py-6"
+                className="flex items-baseline justify-between gap-8 border-b border-line py-6"
               >
-                <dt className="num font-display text-[1.9rem] leading-none">${amount.value}</dt>
-                <dd className="text-right text-[0.95rem] text-ink-2">{amount.note}</dd>
+                <dt className="data font-display text-[1.9rem] leading-none">${amount.value}</dt>
+                <dd className="text-right text-[0.95rem] text-bone-2">{amount.note}</dd>
               </div>
             ))}
           </dl>
 
-          <div className="mt-10 space-y-5 text-ink-2">
+          <div className="mt-10 space-y-5 text-bone-2">
             <p>
               Email us the amount and who it is for and we will send a card the same day, or
               post a paper one in a linen envelope if you would rather hand it over. There is
@@ -70,13 +70,13 @@ export default function GiftCardsPage() {
                 Email us for a card
               </a>
             </Button>
-            <Button asChild variant="outline" size="lg">
+            <Button asChild variant="line" size="lg">
               <a href={studio.phoneHref}>{studio.phone}</a>
             </Button>
           </div>
         </Reveal>
 
-        <Reveal delay={80} className="md:col-span-5 md:col-start-8">
+        <Reveal delay={80} className="lift md:col-span-5 md:col-start-8">
           <Image
             src="/photographs/oil-bowl.webp"
             alt="A ceramic bowl of oil beside dried linden blossom on an oak counter"
@@ -85,9 +85,9 @@ export default function GiftCardsPage() {
             sizes="(min-width: 768px) 40vw, 100vw"
             className="h-auto w-full"
           />
-          <p className="mt-8 border-t border-rule pt-6 text-[0.95rem] text-ink-2">
+          <p className="mt-8 border-t border-line pt-6 text-[0.95rem] text-bone-2">
             Buying for someone who has not been in before? Point them at{" "}
-            <Link href="/first-visit" className="link text-ink">
+            <Link href="/first-visit" className="inline-link text-bone">
               the first visit page
             </Link>
             . It answers most of what people are quietly wondering about.

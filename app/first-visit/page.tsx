@@ -61,7 +61,7 @@ const questions = [
 export default function FirstVisitPage() {
   return (
     <>
-      <div className="wrap pb-20 pt-36 md:pb-28 md:pt-48">
+      <div className="wrap pb-16 pt-[calc(var(--rail)+3.5rem)] md:pb-24 md:pt-[calc(var(--rail)+6rem)]">
         <div className="grid gap-10 md:grid-cols-12">
           <div className="md:col-span-7">
             <h1 className="display max-w-[14ch]">Before you come in</h1>
@@ -71,8 +71,8 @@ export default function FirstVisitPage() {
             </p>
           </div>
           <div className="md:col-span-3 md:col-start-10 md:self-end">
-            <p className="text-[0.95rem] text-ink-2">Something not covered?</p>
-            <a href={studio.phoneHref} className="link num mt-1 inline-block">
+            <p className="text-[0.95rem] text-bone-2">Something not covered?</p>
+            <a href={studio.phoneHref} className="transition-colors duration-200 hover:text-signal data mt-1 inline-block">
               {studio.phone}
             </a>
           </div>
@@ -81,26 +81,26 @@ export default function FirstVisitPage() {
 
       <div className="wrap pb-24 md:pb-32">
         <div className="grid gap-14 md:grid-cols-12 md:gap-10">
-          <Reveal className="md:col-span-7">
-            <Accordion type="single" collapsible className="border-t border-rule">
+          <Reveal className="lift md:col-span-7">
+            <Accordion type="single" collapsible className="border-t border-line">
               {questions.map((item, i) => (
                 <AccordionItem
                   key={item.q}
                   value={`q-${i}`}
-                  className="border-b border-rule last:border-b"
+                  className="border-b border-line last:border-b"
                 >
-                  <AccordionTrigger className="h3 items-center py-6 text-left hover:no-underline [&>svg]:size-5 [&>svg]:text-ink-3">
+                  <AccordionTrigger className="h3 items-center py-6 text-left hover:no-underline [&>svg]:size-5 [&>svg]:text-bone-3">
                     {item.q}
                   </AccordionTrigger>
                   <AccordionContent className="pb-7 pr-8">
-                    <p className="max-w-xl text-[1rem] leading-relaxed text-ink-2">{item.a}</p>
+                    <p className="max-w-xl text-[1rem] leading-relaxed text-bone-2">{item.a}</p>
                   </AccordionContent>
                 </AccordionItem>
               ))}
             </Accordion>
           </Reveal>
 
-          <Reveal delay={90} className="md:col-span-4 md:col-start-9">
+          <Reveal delay={90} className="lift md:col-span-4 md:col-start-9">
             <Image
               src="/photographs/linens.webp"
               alt="Folded linens on a walnut shelf"
@@ -109,8 +109,8 @@ export default function FirstVisitPage() {
               sizes="(min-width: 768px) 32vw, 100vw"
               className="h-auto w-full"
             />
-            <div className="mt-8 border-t border-rule pt-6">
-              <p className="text-[0.95rem] text-ink-2">
+            <div className="mt-8 border-t border-line pt-6">
+              <p className="text-[0.95rem] text-bone-2">
                 Sheets are washed hot between every appointment and the table is wiped down
                 with everything else. If you want unscented oil, say so and you will get it.
               </p>

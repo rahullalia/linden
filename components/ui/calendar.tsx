@@ -31,20 +31,20 @@ function Calendar({
         month: "relative flex w-full flex-col",
         month_caption: "flex h-11 items-center",
         caption_label:
-          "font-display text-[1.3rem] leading-none tracking-[-0.02em] text-ink",
+          "font-display text-[1.3rem] leading-none tracking-[-0.02em] text-bone",
         // z-10 because the caption row is full width and would otherwise
         // swallow the clicks.
         nav: "absolute right-0 top-0 z-10 flex h-11 items-center gap-1",
         button_previous:
-          "inline-flex size-9 items-center justify-center text-ink transition-colors duration-200 hover:text-clay disabled:pointer-events-none disabled:opacity-25",
+          "inline-flex size-9 items-center justify-center text-bone transition-colors duration-200 hover:text-signal disabled:pointer-events-none disabled:opacity-25",
         button_next:
-          "inline-flex size-9 items-center justify-center text-ink transition-colors duration-200 hover:text-clay disabled:pointer-events-none disabled:opacity-25",
-        month_grid: "mt-4 w-full border-collapse border-l border-t border-rule",
+          "inline-flex size-9 items-center justify-center text-bone transition-colors duration-200 hover:text-signal disabled:pointer-events-none disabled:opacity-25",
+        month_grid: "mt-4 w-full border-collapse border-l border-t border-line",
         weekdays: "flex",
         weekday:
-          "flex-1 border-b border-r border-rule py-2 text-[0.68rem] font-normal uppercase tracking-[0.1em] text-ink-3",
+          "flex-1 border-b border-r border-line py-2 text-[0.68rem] font-normal uppercase tracking-[0.1em] text-bone-3",
         week: "flex w-full",
-        day: "group/day relative flex-1 border-b border-r border-rule p-0",
+        day: "group/day relative flex-1 border-b border-r border-line p-0",
         today: "",
         outside: "opacity-0",
         disabled: "",
@@ -87,11 +87,11 @@ function LindenDay({
       type="button"
       data-selected={modifiers.selected || undefined}
       className={cn(
-        "num relative flex aspect-square w-full items-center justify-center text-[0.95rem]",
-        "transition-colors duration-200 ease-[var(--ease-standard)]",
-        "text-ink hover:bg-paper-2",
-        "disabled:pointer-events-none disabled:text-ink-3/45",
-        "data-[selected=true]:bg-ink data-[selected=true]:text-paper",
+        "data relative flex aspect-square w-full items-center justify-center text-[0.95rem]",
+        "transition-colors duration-200 ease-[var(--ease-snap)]",
+        "text-bone hover:bg-ground-2",
+        "disabled:pointer-events-none disabled:text-bone-3/45",
+        "data-[selected=true]:bg-signal data-[selected=true]:text-ground",
         className,
       )}
       {...props}
@@ -100,7 +100,7 @@ function LindenDay({
       {modifiers.today && !modifiers.selected ? (
         <span
           aria-hidden
-          className="absolute bottom-[18%] size-[3px] rounded-full bg-clay"
+          className="absolute bottom-[18%] size-[3px] rounded-full bg-signal"
         />
       ) : null}
     </button>

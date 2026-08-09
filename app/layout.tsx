@@ -1,23 +1,23 @@
 import type { Metadata } from "next";
-import { Instrument_Sans, Newsreader } from "next/font/google";
+import { Archivo, JetBrains_Mono } from "next/font/google";
 
+import { GridRules } from "@/components/grid-rules";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { studio } from "@/lib/studio";
 
 import "./globals.css";
 
-const newsreader = Newsreader({
+const archivo = Archivo({
   subsets: ["latin"],
-  variable: "--font-newsreader",
-  weight: ["300", "400", "500"],
-  style: ["normal", "italic"],
+  variable: "--font-archivo",
+  axes: ["wdth"],
   display: "swap",
 });
 
-const instrumentSans = Instrument_Sans({
+const mono = JetBrains_Mono({
   subsets: ["latin"],
-  variable: "--font-instrument",
+  variable: "--font-mono-face",
   display: "swap",
 });
 
@@ -46,7 +46,7 @@ export const metadata: Metadata = {
     title: "Linden | Massage and bodywork in Williamsburg, Brooklyn",
     description:
       "Four rooms on Withers Street. Hour long appointments, five licensed therapists, gratuity included.",
-    images: [{ url: "/photographs/og.jpg", width: 1200, height: 630, alt: "A treatment room at Linden" }],
+    images: [{ url: "/photographs/og.jpg", width: 1200, height: 630, alt: "Linden, massage and bodywork on Withers Street, Brooklyn" }],
   },
   twitter: {
     card: "summary_large_image",
@@ -87,7 +87,7 @@ const localBusiness = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${newsreader.variable} ${instrumentSans.variable}`}>
+    <html lang="en" className={`${archivo.variable} ${mono.variable}`}>
       <head>
         {/* Scroll reveals only arm themselves once we know scripting is on,
             so the copy stays readable if it never is. */}
@@ -98,12 +98,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         <a
           href="#main"
-          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[200] focus:bg-ink focus:px-4 focus:py-2 focus:text-paper"
+          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[200] focus:bg-signal focus:px-4 focus:py-2 focus:font-mono focus:text-[0.72rem] focus:uppercase focus:tracking-[0.14em] focus:text-ground"
         >
           Skip to content
         </a>
+        <GridRules />
         <SiteHeader />
-        <main id="main">{children}</main>
+        <main id="main" className="relative z-10">
+          {children}
+        </main>
         <SiteFooter />
         <script
           type="application/ld+json"

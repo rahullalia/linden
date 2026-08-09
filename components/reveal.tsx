@@ -8,20 +8,20 @@ type Props = {
   children: React.ReactNode;
   className?: string;
   id?: string;
-  /** Milliseconds, for gently offsetting items in a list. Keep it under 200. */
+  /** Milliseconds, for offsetting items in a list. Keep it under 260. */
   delay?: number;
-  as?: "div" | "section" | "li" | "article";
+  as?: "div" | "section" | "li" | "article" | "span" | "h1" | "h2" | "p";
 };
 
 /**
- * Fades its contents up the first time they reach the fold.
+ * Flips `data-shown` the first time its top edge reaches the fold. The actual
+ * movement lives in CSS: add `lift` for a short rise, or `mask` to slide lines
+ * up from behind a clipped edge.
  *
  * This measures on scroll rather than using an IntersectionObserver on purpose.
  * A threshold based observer can miss a tall block during a fast flick, and an
  * element that has already scrolled past never intersects again, so anything it
- * missed would stay at zero opacity for good. Checking the top edge against the
- * viewport has no such gap: whatever has reached the fold is shown, and a block
- * stops listening as soon as it has.
+ * missed would stay hidden for good.
  */
 export function Reveal({ children, className, id, delay = 0, as = "div" }: Props) {
   const ref = useRef<HTMLElement>(null);
@@ -35,7 +35,7 @@ export function Reveal({ children, className, id, delay = 0, as = "div" }: Props
     const check = () => {
       cancelAnimationFrame(frame);
       frame = requestAnimationFrame(() => {
-        if (node.getBoundingClientRect().top >= window.innerHeight * 0.92) return;
+        if (node.getBoundingClientRect().top >= window.innerHeight * 0.94) return;
         setShown(true);
         stop();
       });
@@ -62,8 +62,43 @@ export function Reveal({ children, className, id, delay = 0, as = "div" }: Props
       id,
       "data-shown": shown,
       style: delay ? { transitionDelay: `${delay}ms` } : undefined,
-      className: cn("reveal", className),
+      className: cn(className),
     },
     children,
+  );
+}
+
+/**
+ * Display type that arrives one line at a time from behind a clipped edge.
+ * Pass the lines yourself so the breaks are a typographic decision rather than
+ * whatever the viewport happens to do.
+ */
+export function MaskedLines({
+  lines,
+  className,
+  as = "h1",
+  stagger = 90,
+}: {
+  lines: string[];
+  className?: string;
+  as?: "h1" | "h2" | "p";
+  stagger?: number;
+}) {
+  return (
+    <Reveal as={as} className={className}>
+      {lines.map((line, i) => (
+        <MaskLine key={line} delay={i * stagger}>
+          {line}
+        </MaskLine>
+      ))}
+    </Reveal>
+  );
+}
+
+function MaskLine({ children, delay }: { children: React.ReactNode; delay: number }) {
+  return (
+    <Reveal as="span" className="mask block">
+      <span style={{ transitionDelay: `${delay}ms` }}>{children}</span>
+    </Reveal>
   );
 }

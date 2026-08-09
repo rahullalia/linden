@@ -41,7 +41,49 @@ export function BookingFlow() {
   const confirmationRef = useRef<HTMLDivElement>(null);
 
   // The calendar depends on the visitor's clock, so it waits for the browser.
-  useEffect(() => setNow(new Date()), []);
+  // The same pass picks up anything the board on the home page put in the URL,
+  // which is what turns picking a time there into one step rather than four.
+  // Reading location directly rather than useSearchParams keeps this page
+  // static: no Suspense boundary, no dynamic rendering.
+  useEffect(() => {
+    const rightNow = new Date();
+    setNow(rightNow);
+
+    const params = new URLSearchParams(window.location.search);
+    const slug = params.get("s");
+    const service = slug ? serviceBySlug.get(slug) : undefined;
+    if (!service) return;
+
+    const optionIndex = Number(params.get("o") ?? 0);
+    const option = service.options[optionIndex];
+    if (!option) return;
+    setChosen({ slug: service.slug, option: optionIndex });
+
+    const who = params.get("t");
+    const known = who === NO_PREFERENCE || practitionersFor(service.slug).some((p) => p.id === who);
+    if (!who || !known) return;
+    setTherapist(who);
+
+    const day = params.get("d")?.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    const at = Number(params.get("at"));
+    if (!day || !Number.isFinite(at)) {
+      setStep(2);
+      return;
+    }
+
+    // Built from parts, because parsing the string form would land on UTC and
+    // could hand back the wrong day.
+    const picked = new Date(Number(day[1]), Number(day[2]) - 1, Number(day[3]));
+    if (!openSlots(picked, option.minutes, who, rightNow).includes(at)) {
+      setDate(picked);
+      setStep(2);
+      return;
+    }
+
+    setDate(picked);
+    setTime(at);
+    setStep(3);
+  }, []);
 
   const service = chosen ? serviceBySlug.get(chosen.slug) : undefined;
   const option = service && chosen ? service.options[chosen.option] : undefined;
@@ -97,17 +139,17 @@ export function BookingFlow() {
 
   if (booked && service && option && date && time !== null) {
     return (
-      <div ref={confirmationRef} className="border-t border-rule pt-12">
-        <div className="flex size-11 items-center justify-center rounded-full border border-ink">
+      <div ref={confirmationRef} className="border-t border-line pt-12">
+        <div className="flex size-11 items-center justify-center rounded-full border border-bone">
           <Check className="size-5" strokeWidth={1.5} aria-hidden />
         </div>
         <h2 className="h2 mt-7">You are down for {longDate.format(date)}.</h2>
-        <p className="mt-5 max-w-md text-ink-2">
+        <p className="mt-5 max-w-md text-bone-2">
           Nothing was charged. We take a card at the front desk when you leave, and the price
           already includes gratuity. If something changes, call us at least a day ahead.
         </p>
 
-        <dl className="mt-10 max-w-lg border-t border-rule">
+        <dl className="mt-10 max-w-lg border-t border-line">
           {[
             ["What", `${service.name}, ${option.minutes} minutes`],
             ["With", therapistName ?? "Whoever is free"],
@@ -116,19 +158,19 @@ export function BookingFlow() {
             ["Price", `$${option.price}, gratuity included`],
             ["Name", details.name],
           ].map(([label, value]) => (
-            <div key={label} className="flex justify-between gap-8 border-b border-rule py-4">
-              <dt className="text-ink-3">{label}</dt>
+            <div key={label} className="flex justify-between gap-8 border-b border-line py-4">
+              <dt className="text-bone-3">{label}</dt>
               <dd className="text-right">{value}</dd>
             </div>
           ))}
         </dl>
 
-        <p className="mt-8 max-w-md text-[0.9rem] text-ink-3">
+        <p className="mt-8 max-w-md text-[0.9rem] text-bone-3">
           This is a concept site, so no appointment was actually made and nobody was emailed.
         </p>
 
         <Button
-          variant="outline"
+          variant="line"
           size="lg"
           className="mt-8"
           onClick={() => {
@@ -157,14 +199,14 @@ export function BookingFlow() {
           summary={service && option ? `${service.name}, ${option.minutes} min` : null}
           onOpen={() => setStep(0)}
         >
-          <fieldset className="space-y-0 border-t border-rule">
+          <fieldset className="space-y-0 border-t border-line">
             <legend className="sr-only">Choose a service</legend>
             {services.map((item) => (
-              <div key={item.slug} className="border-b border-rule py-5">
+              <div key={item.slug} className="border-b border-line py-5">
                 <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-3">
                   <div className="max-w-sm">
                     <p className="h3">{item.name}</p>
-                    <p className="mt-1 text-[0.94rem] text-ink-2">{item.short}</p>
+                    <p className="mt-1 text-[0.94rem] text-bone-2">{item.short}</p>
                   </div>
                   <div className="flex flex-wrap gap-2">
                     {item.options.map((opt, i) => {
@@ -183,16 +225,16 @@ export function BookingFlow() {
                           <label
                             htmlFor={id}
                             className={cn(
-                              "num inline-flex cursor-pointer items-center gap-2 rounded-[2px] border px-4 py-2.5 text-[0.88rem]",
-                              "transition-colors duration-200 ease-[var(--ease-standard)]",
-                              "peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-clay",
+                              "data inline-flex cursor-pointer items-center gap-2 border px-4 py-2.5 text-[0.88rem]",
+                              "transition-colors duration-200 ease-[var(--ease-snap)]",
+                              "peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-signal",
                               active
-                                ? "border-ink bg-ink text-paper"
-                                : "border-rule text-ink hover:border-ink",
+                                ? "border-signal bg-signal text-ground"
+                                : "border-line text-bone hover:border-bone",
                             )}
                           >
                             <span>{opt.minutes} min</span>
-                            <span className={active ? "text-paper/60" : "text-ink-3"}>
+                            <span className={active ? "text-bone/60" : "text-bone-3"}>
                               ${opt.price}
                             </span>
                           </label>
@@ -214,7 +256,7 @@ export function BookingFlow() {
           summary={therapist ? (therapistName ?? null) : null}
           onOpen={() => setStep(1)}
         >
-          <fieldset className="border-t border-rule">
+          <fieldset className="border-t border-line">
             <legend className="sr-only">Choose a therapist</legend>
             {[
               { id: NO_PREFERENCE, name: "Whoever is free", line: "Usually the widest choice of times" },
@@ -234,14 +276,14 @@ export function BookingFlow() {
                   <label
                     htmlFor={`t-${person.id}`}
                     className={cn(
-                      "flex cursor-pointer items-baseline justify-between gap-6 border-b border-rule py-5",
-                      "transition-colors duration-200 ease-[var(--ease-standard)] hover:bg-paper-2",
-                      "peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:-outline-offset-2 peer-focus-visible:outline-clay",
-                      active && "bg-paper-2",
+                      "flex cursor-pointer items-baseline justify-between gap-6 border-b border-line py-5",
+                      "transition-colors duration-200 ease-[var(--ease-snap)] hover:bg-ground-2",
+                      "peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:-outline-offset-2 peer-focus-visible:outline-signal",
+                      active && "bg-ground-2",
                     )}
                   >
                     <span className="h3">{person.name}</span>
-                    <span className="text-right text-[0.92rem] text-ink-2">{person.line}</span>
+                    <span className="text-right text-[0.92rem] text-bone-2">{person.line}</span>
                   </label>
                 </div>
               );
@@ -280,7 +322,7 @@ export function BookingFlow() {
                 {date ? (
                   slots.length > 0 ? (
                     <>
-                      <p className="text-[0.94rem] text-ink-2">
+                      <p className="text-[0.94rem] text-bone-2">
                         Open on {longDate.format(date)}
                       </p>
                       <div className="mt-4 grid grid-cols-3 gap-2">
@@ -293,11 +335,11 @@ export function BookingFlow() {
                               setStep(3);
                             }}
                             className={cn(
-                              "num rounded-[2px] border py-2.5 text-[0.86rem]",
-                              "transition-colors duration-200 ease-[var(--ease-standard)]",
+                              "data border py-2.5 text-[0.86rem]",
+                              "transition-colors duration-200 ease-[var(--ease-snap)]",
                               time === slot
-                                ? "border-ink bg-ink text-paper"
-                                : "border-rule hover:border-ink",
+                                ? "border-signal bg-signal text-ground"
+                                : "border-line hover:border-bone",
                             )}
                           >
                             {formatTime(slot)}
@@ -306,12 +348,12 @@ export function BookingFlow() {
                       </div>
                     </>
                   ) : (
-                    <p className="text-ink-2">
+                    <p className="text-bone-2">
                       Nothing left on that day. Try the one after it.
                     </p>
                   )
                 ) : (
-                  <p className="text-ink-2">
+                  <p className="text-bone-2">
                     Pick a day. Greyed out days are either full or a Monday, when we are
                     closed.
                   </p>
@@ -319,7 +361,7 @@ export function BookingFlow() {
               </div>
             </div>
           ) : (
-            <div className="h-64 animate-pulse bg-paper-2" aria-hidden />
+            <div className="h-64 animate-pulse bg-ground-2" aria-hidden />
           )}
         </Step>
 
@@ -364,7 +406,7 @@ export function BookingFlow() {
               </p>
             ) : null}
             <div>
-              <label htmlFor="notes" className="block text-[0.88rem] text-ink-2">
+              <label htmlFor="notes" className="block text-[0.88rem] text-bone-2">
                 Anything your therapist should know
               </label>
               <textarea
@@ -373,7 +415,7 @@ export function BookingFlow() {
                 value={details.notes}
                 onChange={(e) => setDetails((d) => ({ ...d, notes: e.target.value }))}
                 placeholder="Injuries, surgeries, pregnancy, areas to leave alone"
-                className="mt-2 w-full rounded-[2px] border border-rule bg-transparent px-4 py-3 text-[0.95rem] placeholder:text-ink-3/70 focus:border-ink focus:outline-none"
+                className="mt-2 w-full border border-line bg-transparent px-4 py-3 text-[0.95rem] placeholder:text-bone-3/70 focus:border-bone focus:outline-none"
               />
             </div>
             <Button type="submit" size="lg">
@@ -384,7 +426,7 @@ export function BookingFlow() {
       </ol>
 
       <aside className="md:col-span-4 md:col-start-9">
-        <div className="border-t border-rule pt-6 md:sticky md:top-28">
+        <div className="border-t border-line pt-6 md:sticky md:top-28">
           <h2 className="h3">Your appointment</h2>
           <dl className="mt-5 space-y-3 text-[0.95rem]">
             <Line label="Service" value={service ? service.name : null} />
@@ -398,7 +440,7 @@ export function BookingFlow() {
             />
             <Line label="Price" value={option ? `$${option.price}` : null} />
           </dl>
-          <p className="mt-7 border-t border-rule pt-5 text-[0.9rem] text-ink-3">
+          <p className="mt-7 border-t border-line pt-5 text-[0.9rem] text-bone-3">
             Gratuity is in the price. Nothing is charged online. Cancel a day ahead and there
             is no fee.
           </p>
@@ -411,8 +453,8 @@ export function BookingFlow() {
 function Line({ label, value }: { label: string; value: string | null | undefined }) {
   return (
     <div className="flex justify-between gap-6">
-      <dt className="text-ink-3">{label}</dt>
-      <dd className={cn("text-right", !value && "text-ink-3")}>{value || "Not yet"}</dd>
+      <dt className="text-bone-3">{label}</dt>
+      <dd className={cn("text-right", !value && "text-bone-3")}>{value || "Not yet"}</dd>
     </div>
   );
 }
@@ -437,7 +479,7 @@ function Step({
   children: React.ReactNode;
 }) {
   return (
-    <li className={cn("border-t border-rule", last && "border-b")}>
+    <li className={cn("border-t border-line", last && "border-b")}>
       <h2>
         <button
           type="button"
@@ -450,10 +492,10 @@ function Step({
             locked && "cursor-default opacity-35",
           )}
         >
-          <span className="meta pt-1">{String(index + 1).padStart(2, "0")}</span>
+          <span className="tag pt-1">{String(index + 1).padStart(2, "0")}</span>
           <span className="h3 flex-1">{title}</span>
           {summary && !open ? (
-            <span className="hidden text-right text-[0.92rem] text-ink-2 sm:block">
+            <span className="hidden text-right text-[0.92rem] text-bone-2 sm:block">
               {summary}
             </span>
           ) : null}
@@ -461,7 +503,7 @@ function Step({
       </h2>
       <div
         className={cn(
-          "grid transition-[grid-template-rows] duration-500 ease-[var(--ease-out-soft)]",
+          "grid transition-[grid-template-rows] duration-500 ease-[var(--ease-mech)]",
           open ? "grid-rows-[1fr]" : "grid-rows-[0fr]",
         )}
       >
@@ -492,7 +534,7 @@ function Field({
 }) {
   return (
     <div>
-      <label htmlFor={id} className="block text-[0.88rem] text-ink-2">
+      <label htmlFor={id} className="block text-[0.88rem] text-bone-2">
         {label}
       </label>
       <input
@@ -504,9 +546,9 @@ function Field({
         aria-describedby={error ? `${id}-error` : undefined}
         onChange={(e) => onChange(e.target.value)}
         className={cn(
-          "mt-2 h-12 w-full rounded-[2px] border bg-transparent px-4 text-[0.95rem]",
+          "mt-2 h-12 w-full border bg-transparent px-4 text-[0.95rem]",
           "transition-colors duration-200 focus:outline-none",
-          error ? "border-destructive" : "border-rule focus:border-ink",
+          error ? "border-destructive" : "border-line focus:border-bone",
         )}
       />
       {error ? (

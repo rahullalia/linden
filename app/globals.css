@@ -1,190 +1,246 @@
 @import "tailwindcss";
 
 @theme {
-  --color-paper: #f4f0e9;
-  --color-paper-2: #eae4d9;
-  --color-ink: #191612;
-  --color-ink-2: #514b42;
-  --color-ink-3: #6f6a5e;
-  --color-rule: #dad3c6;
-  --color-clay: #9d5c36;
-  --color-clay-deep: #7d4526;
-  --color-night: #14120e;
-  --color-night-2: #221f19;
-  --color-night-rule: #35312a;
+  --color-ground: #0e0f11;
+  --color-ground-2: #16181b;
+  --color-ground-3: #1e2125;
+  --color-bone: #f2f1ed;
+  --color-bone-2: #a8a79f;
+  --color-bone-3: #8a8a83;
+  --color-line: #292c31;
+  --color-line-soft: #1c1f23;
+  --color-signal: #ff4a1f;
+  --color-signal-deep: #d93711;
 
-  --font-display: var(--font-newsreader), "Iowan Old Style", Georgia, serif;
-  --font-sans: var(--font-instrument), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-archivo), "Helvetica Neue", Arial, sans-serif;
+  --font-sans: var(--font-archivo), "Helvetica Neue", Arial, sans-serif;
+  --font-mono: var(--font-mono-face), ui-monospace, "SF Mono", Menlo, monospace;
 
-  --ease-out-soft: cubic-bezier(0.16, 1, 0.3, 1);
-  --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-snap: cubic-bezier(0.2, 0.9, 0.2, 1);
+  --ease-mech: cubic-bezier(0.65, 0, 0.35, 1);
+
+  --rail: 4.5rem;
 }
 
 /* The Radix primitives ship against a generic token set. Point that set at the
    Linden palette so they inherit the design instead of fighting it. */
 @theme inline {
-  --color-background: var(--color-paper);
-  --color-foreground: var(--color-ink);
-  --color-card: var(--color-paper);
-  --color-card-foreground: var(--color-ink);
-  --color-popover: var(--color-paper);
-  --color-popover-foreground: var(--color-ink);
-  --color-primary: var(--color-ink);
-  --color-primary-foreground: var(--color-paper);
-  --color-secondary: var(--color-paper-2);
-  --color-secondary-foreground: var(--color-ink);
-  --color-muted: var(--color-paper-2);
-  --color-muted-foreground: var(--color-ink-3);
-  --color-accent: var(--color-paper-2);
-  --color-accent-foreground: var(--color-ink);
-  --color-destructive: #8c2f1d;
-  --color-border: var(--color-rule);
-  --color-input: var(--color-rule);
-  --color-ring: var(--color-clay);
-  --radius: 2px;
-  --radius-sm: 2px;
-  --radius-md: 2px;
-  --radius-lg: 3px;
-  --radius-xl: 4px;
+  --color-background: var(--color-ground);
+  --color-foreground: var(--color-bone);
+  --color-card: var(--color-ground-2);
+  --color-card-foreground: var(--color-bone);
+  --color-popover: var(--color-ground-2);
+  --color-popover-foreground: var(--color-bone);
+  --color-primary: var(--color-signal);
+  --color-primary-foreground: var(--color-ground);
+  --color-secondary: var(--color-ground-2);
+  --color-secondary-foreground: var(--color-bone);
+  --color-muted: var(--color-ground-2);
+  --color-muted-foreground: var(--color-bone-3);
+  --color-accent: var(--color-ground-3);
+  --color-accent-foreground: var(--color-bone);
+  --color-destructive: #ff6b4a;
+  --color-border: var(--color-line);
+  --color-input: var(--color-line);
+  --color-ring: var(--color-signal);
+  --radius: 0px;
+  --radius-sm: 0px;
+  --radius-md: 0px;
+  --radius-lg: 0px;
+  --radius-xl: 0px;
 }
 
 @layer base {
   html {
     -webkit-text-size-adjust: 100%;
+    background-color: var(--color-ground);
   }
 
   body {
-    background-color: var(--color-paper);
-    color: var(--color-ink);
+    background-color: var(--color-ground);
+    color: var(--color-bone);
     font-family: var(--font-sans);
     font-size: 1.0625rem;
-    line-height: 1.65;
+    line-height: 1.6;
     font-feature-settings: "kern", "liga";
     -webkit-font-smoothing: antialiased;
   }
 
-  /* Paper tooth. Enough to break the flat digital fill, not enough to notice. */
-  body::before {
-    content: "";
-    position: fixed;
-    inset: 0;
-    z-index: 100;
-    pointer-events: none;
-    opacity: 0.028;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E");
-  }
-
   ::selection {
-    background-color: #e3d3c4;
-    color: var(--color-ink);
+    background-color: var(--color-signal);
+    color: var(--color-ground);
   }
 
   :focus-visible {
-    outline: 2px solid var(--color-clay);
-    outline-offset: 3px;
+    outline: 2px solid var(--color-signal);
+    outline-offset: 2px;
   }
 
   h1,
   h2,
   h3 {
     font-family: var(--font-display);
-    font-weight: 400;
-    letter-spacing: -0.018em;
-    text-wrap: balance;
-  }
-
-  p {
-    text-wrap: pretty;
-  }
-
-  hr {
-    border: 0;
-    border-top: 1px solid var(--color-rule);
+    font-weight: 500;
   }
 }
 
 @layer components {
   .wrap {
     width: 100%;
-    max-width: 82rem;
+    max-width: 96rem;
     margin-inline: auto;
-    padding-inline: clamp(1.25rem, 5vw, 4.5rem);
+    padding-inline: clamp(1.15rem, 4vw, 3.5rem);
   }
 
+  /* Set wide and tight. The width axis is what stops this reading as Helvetica. */
   .display {
     font-family: var(--font-display);
-    font-weight: 400;
-    font-size: clamp(2.6rem, 1.1rem + 5.4vw, 6rem);
-    line-height: 0.98;
-    letter-spacing: -0.028em;
+    font-variation-settings: "wdth" 112;
+    font-weight: 600;
+    font-size: clamp(2.6rem, 0.5rem + 9vw, 8.5rem);
+    line-height: 0.85;
+    letter-spacing: -0.045em;
+    text-transform: uppercase;
   }
 
   .h2 {
     font-family: var(--font-display);
-    font-weight: 400;
-    font-size: clamp(1.8rem, 1.1rem + 2.4vw, 3.1rem);
-    line-height: 1.08;
-    letter-spacing: -0.022em;
+    font-variation-settings: "wdth" 108;
+    font-weight: 600;
+    font-size: clamp(1.7rem, 0.9rem + 2.9vw, 3.6rem);
+    line-height: 0.94;
+    letter-spacing: -0.035em;
+    text-transform: uppercase;
   }
 
   .h3 {
     font-family: var(--font-display);
-    font-weight: 400;
-    font-size: clamp(1.3rem, 1.05rem + 0.9vw, 1.7rem);
-    line-height: 1.2;
+    font-weight: 500;
+    font-size: clamp(1.15rem, 1rem + 0.65vw, 1.5rem);
+    line-height: 1.15;
+    letter-spacing: -0.018em;
   }
 
   .lede {
-    font-size: clamp(1.1rem, 1rem + 0.45vw, 1.35rem);
-    line-height: 1.55;
-    color: var(--color-ink-2);
+    font-size: clamp(1.05rem, 0.98rem + 0.4vw, 1.3rem);
+    line-height: 1.5;
+    color: var(--color-bone-2);
   }
 
-  .meta {
-    font-size: 0.75rem;
-    letter-spacing: 0.1em;
+  .tag {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    line-height: 1;
+    letter-spacing: 0.14em;
     text-transform: uppercase;
-    font-variant-numeric: tabular-nums;
-    color: var(--color-ink-3);
-  }
-
-  .num {
+    color: var(--color-bone-3);
     font-variant-numeric: tabular-nums;
   }
 
-  /* Underline that draws from the left instead of just switching on. */
-  .link {
-    background-image: linear-gradient(currentColor, currentColor);
-    background-size: 0% 1px;
-    background-repeat: no-repeat;
-    background-position: 0 100%;
-    transition: background-size 320ms var(--ease-out-soft);
+  /* Links sitting inside a paragraph need more than colour to be findable. */
+  .inline-link {
+    text-decoration: underline;
+    text-underline-offset: 0.22em;
+    text-decoration-thickness: 1px;
+    text-decoration-color: var(--color-bone-3);
+    transition: color 200ms var(--ease-snap), text-decoration-color 200ms var(--ease-snap);
   }
 
-  .link:hover,
-  .link:focus-visible {
-    background-size: 100% 1px;
+  .inline-link:hover,
+  .inline-link:focus-visible {
+    color: var(--color-signal);
+    text-decoration-color: var(--color-signal);
+  }
+
+  .data {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.01em;
+  }
+
+  /* A rule that draws itself downward, like a schematic being plotted. */
+  .plot {
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 700ms var(--ease-mech);
+  }
+
+  [data-shown="true"] .plot,
+  .plot[data-shown="true"] {
+    transform: scaleX(1);
   }
 }
 
 @layer utilities {
-  /* Gated on the flag set by the inline script in the document head. Without
-     scripting the attribute never lands, so the copy is simply there. */
-  [data-motion="on"] .reveal {
-    opacity: 0;
-    transform: translateY(14px);
-    transition:
-      opacity 900ms var(--ease-out-soft),
-      transform 900ms var(--ease-out-soft);
+  /* Line mask. The parent clips, the child slides up from below it. Pure
+     transform, so it stays on the compositor. */
+  [data-motion="on"] .mask > * {
+    display: block;
+    transform: translateY(110%);
+    transition: transform 700ms var(--ease-mech);
   }
 
-  [data-motion="on"] .reveal[data-shown="true"] {
+  [data-motion="on"] .mask[data-shown="true"] > * {
+    transform: none;
+  }
+
+  [data-motion="on"] .lift {
+    opacity: 0;
+    transform: translateY(10px);
+    transition:
+      opacity 420ms var(--ease-snap),
+      transform 420ms var(--ease-snap);
+  }
+
+  [data-motion="on"] .lift[data-shown="true"] {
     opacity: 1;
     transform: none;
   }
 
-  .over-footage {
-    text-shadow: 0 1px 14px rgba(18, 16, 12, 0.5);
+  .mask {
+    overflow: hidden;
+  }
+
+  /* Fills from the left on hover, label inverts as it passes. */
+  .wipe {
+    position: relative;
+    isolation: isolate;
+  }
+
+  .wipe::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background-color: var(--color-signal);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 320ms var(--ease-snap);
+  }
+
+  .wipe:hover::before,
+  .wipe:focus-visible::before {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes menu-in {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
   }
 }
 
@@ -198,8 +254,13 @@
     scroll-behavior: auto !important;
   }
 
-  .reveal {
+  [data-motion="on"] .mask > *,
+  [data-motion="on"] .lift {
     opacity: 1;
     transform: none;
+  }
+
+  .plot {
+    transform: scaleX(1);
   }
 }
