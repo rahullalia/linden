@@ -13,6 +13,16 @@ type Props = {
   as?: "div" | "section" | "li" | "article";
 };
 
+/**
+ * Fades its contents up the first time they reach the fold.
+ *
+ * This measures on scroll rather than using an IntersectionObserver on purpose.
+ * A threshold based observer can miss a tall block during a fast flick, and an
+ * element that has already scrolled past never intersects again, so anything it
+ * missed would stay at zero opacity for good. Checking the top edge against the
+ * viewport has no such gap: whatever has reached the fold is shown, and a block
+ * stops listening as soon as it has.
+ */
 export function Reveal({ children, className, id, delay = 0, as = "div" }: Props) {
   const ref = useRef<HTMLElement>(null);
   const [shown, setShown] = useState(false);
@@ -21,27 +31,28 @@ export function Reveal({ children, className, id, delay = 0, as = "div" }: Props
     const node = ref.current;
     if (!node) return;
 
-    // Anything already level with the fold or scrolled past it is shown at
-    // once. Without this, arriving partway down the page (an anchor link, a
-    // restored scroll position, a fast flick) would leave everything above
-    // the viewport stuck at zero opacity, because it never intersects again.
-    if (node.getBoundingClientRect().top < window.innerHeight) {
-      setShown(true);
-      return;
-    }
+    let frame = 0;
+    const check = () => {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(() => {
+        if (node.getBoundingClientRect().top >= window.innerHeight * 0.92) return;
+        setShown(true);
+        stop();
+      });
+    };
+    const stop = () => {
+      window.removeEventListener("scroll", check);
+      window.removeEventListener("resize", check);
+    };
 
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setShown(true);
-          observer.disconnect();
-        }
-      },
-      { rootMargin: "0px 0px -12% 0px", threshold: 0.06 },
-    );
+    check();
+    window.addEventListener("scroll", check, { passive: true });
+    window.addEventListener("resize", check, { passive: true });
 
-    observer.observe(node);
-    return () => observer.disconnect();
+    return () => {
+      stop();
+      cancelAnimationFrame(frame);
+    };
   }, []);
 
   return createElement(
