@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 import { Dialog } from "radix-ui";
 
 import { Button } from "@/components/ui/button";
@@ -181,17 +181,18 @@ export function SiteHeader() {
  * the visitor's own clock. The row keeps its height while it is empty so
  * nothing jumps when the answer arrives.
  */
-function NextOpening() {
-  const [label, setLabel] = useState<string | null>(null);
+function nextOpeningLabel() {
+  const [soonest] = nextOpenings(new Date(), 1, services, practitionersFor);
+  if (!soonest) return null;
+  const today = new Date().toDateString() === soonest.date.toDateString();
+  return `${today ? "Today" : shortDay.format(soonest.date)} ${formatTime(soonest.start)}`;
+}
 
-  useEffect(() => {
-    const [soonest] = nextOpenings(new Date(), 1, services, practitionersFor);
-    if (!soonest) return;
-    const today = new Date().toDateString() === soonest.date.toDateString();
-    setLabel(
-      `${today ? "Today" : shortDay.format(soonest.date)} ${formatTime(soonest.start)}`,
-    );
-  }, []);
+const noSubscription = () => () => {};
+
+function NextOpening() {
+  // Read in the browser only; the server renders the empty row.
+  const label = useSyncExternalStore(noSubscription, nextOpeningLabel, () => null);
 
   return (
     <p className="hidden h-5 items-center gap-2.5 font-mono text-[0.68rem] uppercase tracking-[0.14em] md:flex">

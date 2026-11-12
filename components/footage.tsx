@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useSyncExternalStore } from "react";
 
 /**
  * The full width band of footage partway down the page. Decorative, so it stays
@@ -11,20 +11,22 @@ import { useEffect, useRef, useState } from "react";
  * motion and is not on a metered connection. That keeps a megabyte of video off
  * phones entirely.
  */
+const noSubscription = () => () => {};
+
+function footageWanted() {
+  const wide = window.matchMedia("(min-width: 768px)");
+  const still = window.matchMedia("(prefers-reduced-motion: reduce)");
+  const connection = (
+    navigator as Navigator & { connection?: { saveData?: boolean } }
+  ).connection;
+
+  return wide.matches && !still.matches && !connection?.saveData;
+}
+
 export function Footage() {
   const ref = useRef<HTMLVideoElement>(null);
-  const [wanted, setWanted] = useState(false);
-
-  useEffect(() => {
-    const wide = window.matchMedia("(min-width: 768px)");
-    const still = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const connection = (
-      navigator as Navigator & { connection?: { saveData?: boolean } }
-    ).connection;
-
-    if (!wide.matches || still.matches || connection?.saveData) return;
-    setWanted(true);
-  }, []);
+  // Checked once the browser has the page; the server always renders the poster only.
+  const wanted = useSyncExternalStore(noSubscription, footageWanted, () => false);
 
   useEffect(() => {
     const video = ref.current;

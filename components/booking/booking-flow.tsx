@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { Check } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -16,6 +16,7 @@ import {
 import { practitionersFor } from "@/lib/practitioners";
 import { serviceBySlug, services } from "@/lib/services";
 import { studio } from "@/lib/studio";
+import { useHydrated } from "@/lib/use-hydrated";
 import { cn } from "@/lib/utils";
 
 type Chosen = { slug: string; option: number };
@@ -44,11 +45,9 @@ export function BookingFlow() {
   // The same pass picks up anything the board on the home page put in the URL,
   // which is what turns picking a time there into one step rather than four.
   // Reading location directly rather than useSearchParams keeps this page
-  // static: no Suspense boundary, no dynamic rendering.
-  useEffect(() => {
-    const rightNow = new Date();
-    setNow(rightNow);
-
+  // static: no Suspense boundary, no dynamic rendering. It runs once, in the
+  // first render after hydration (state adjusted during render, not in an effect).
+  function applyLink(rightNow: Date) {
     const params = new URLSearchParams(window.location.search);
     const slug = params.get("s");
     const service = slug ? serviceBySlug.get(slug) : undefined;
@@ -83,7 +82,14 @@ export function BookingFlow() {
     setDate(picked);
     setTime(at);
     setStep(3);
-  }, []);
+  }
+
+  const hydrated = useHydrated();
+  if (hydrated && now === null) {
+    const rightNow = new Date();
+    setNow(rightNow);
+    applyLink(rightNow);
+  }
 
   const service = chosen ? serviceBySlug.get(chosen.slug) : undefined;
   const option = service && chosen ? service.options[chosen.option] : undefined;

@@ -1,6 +1,6 @@
 "use client";
 
-import { createElement, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { cn } from "@/lib/utils";
 
@@ -55,16 +55,17 @@ export function Reveal({ children, className, id, delay = 0, as = "div" }: Props
     };
   }, []);
 
-  return createElement(
-    as,
-    {
-      ref,
-      id,
-      "data-shown": shown,
-      style: delay ? { transitionDelay: `${delay}ms` } : undefined,
-      className: cn(className),
-    },
-    children,
+  const Tag = as as React.ElementType;
+  return (
+    <Tag
+      ref={ref}
+      id={id}
+      data-shown={shown}
+      style={delay ? { transitionDelay: `${delay}ms` } : undefined}
+      className={cn(className)}
+    >
+      {children}
+    </Tag>
   );
 }
 

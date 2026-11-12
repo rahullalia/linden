@@ -1,12 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { ArrowRight } from "lucide-react";
 
 import { dateKey, formatTime, nextOpenings, type Opening } from "@/lib/availability";
 import { practitioners, practitionersFor } from "@/lib/practitioners";
 import { serviceBySlug, services } from "@/lib/services";
+import { useHydrated } from "@/lib/use-hydrated";
 
 const ROWS = 3;
 
@@ -28,9 +29,11 @@ function dayLabel(date: Date) {
 export function OpeningsBoard() {
   const [openings, setOpenings] = useState<Opening[] | null>(null);
 
-  useEffect(() => {
+  // Once, in the first render after hydration (state adjusted during render, not in an effect).
+  const hydrated = useHydrated();
+  if (hydrated && openings === null) {
     setOpenings(nextOpenings(new Date(), ROWS, services, practitionersFor));
-  }, []);
+  }
 
   return (
     <div className="border-t border-line">
